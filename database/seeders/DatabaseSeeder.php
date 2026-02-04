@@ -15,11 +15,11 @@ class DatabaseSeeder extends Seeder
     {
 
         $this->call([
-            // EtablissementsSeeder::class,
-            // NiveauxSeeder::class,
-            // ClassesSeeder::class,
-           //TypeLogementsSeeder::class,
-            // LogementsSeeder::class,
+            EtablissementsSeeder::class,
+            NiveauxSeeder::class,
+            ClassesSeeder::class,
+            TypeLogementsSeeder::class,
+            LogementsSeeder::class,
             RoleSeeder::class,
         ]);
         

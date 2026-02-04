@@ -21,8 +21,8 @@ export default function Edit({ logement, types }) {
 
     return (
         <AuthenticatedLayout>
-            <div className="p-6 bg-base-100 text-base-content rounded-lg shadow">
-                <h1 className="text-2xl mb-4">Modifier le logement</h1>
+            <div className="p-6 bg-base-100 text-base-content rounded-lg shadow ">
+                <h1 className="text-2xl mb-4 text-center">Modifier le logement</h1>
 
                 <form onSubmit={handleSubmit} className="space-y-4">
 

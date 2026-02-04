@@ -6,7 +6,7 @@ export default function GuestLayout({ children }) {
     return (
         <div>
             {/* NAVBAR FIXE */}
-            <Navbar />
+            <Navbar/>
 
             {/* CONTENU AVEC MARGE POUR NE PAS PASSER SOUS LA NAVBAR */}
             <div className="pt-24 pb-16 flex flex-col items-center">
