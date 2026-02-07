@@ -1,21 +1,21 @@
 import { usePage } from '@inertiajs/react';
 import AuthenticatedLayout from './AuthenticatedLayout';
-import AdminSidebar from '@/Components/AdminSidebar';
-import ReceptionSidebar from '@/Components/ReceptionSidebar';
+import { roleSidebarMap } from './RoleSidebarMap';
 
 export default function Layout({ children, header = null }) {
     const { auth } = usePage().props;
-    const role = auth?.user?.roles?.[0]?.name; // Admin | Receptioniste | Client
+    const roleName = auth?.user?.roles?.[0]?.name;
+
+    const SidebarComponent = roleSidebarMap[roleName];
 
     return (
         <AuthenticatedLayout>
-            <div className="flex min-h-screen w-full overflow-hidden">
-                
+            <div className="flex min-h-screen w-full overflow-hidden bg-base-100">
+
                 {/* SIDEBAR */}
-                {(role === 'Admin' || role === 'Receptioniste') && (
-                    <aside className="hidden md:block w-64 bg-white border-r flex-shrink-0">
-                        {role === 'Admin' && <AdminSidebar />}
-                        {role === 'Receptioniste' && <ReceptionSidebar />}
+                {SidebarComponent && (
+                    <aside className="hidden md:block w-64 bg-base-200 border-r border-base-300">
+                        <SidebarComponent />
                     </aside>
                 )}
 
@@ -24,15 +24,15 @@ export default function Layout({ children, header = null }) {
 
                     {/* HEADER OPTIONNEL */}
                     {header && (
-                        <header className="bg-white shadow">
-                            <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
+                        <header className="shadow border-b border-base-300">
+                            <div className="mx-auto max-w-7xl px-4 py-6 text-base-content">
                                 {header}
                             </div>
                         </header>
                     )}
 
-                    {/* MAIN → SCROLL HORIZONTAL AUTORISÉ */}
-                    <main className="flex-1 p-6 overflow-x-auto">
+                    {/* MAIN */}
+                    <main className="flex-1 p-6 text-base-content overflow-x-auto">
                         {children}
                     </main>
 

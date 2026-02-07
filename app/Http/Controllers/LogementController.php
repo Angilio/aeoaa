@@ -6,11 +6,18 @@ use App\Models\Logement;
 use App\Models\TypeLogement;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use Illuminate\Support\Facades\Auth;
 
 class LogementController extends Controller
 {
     public function index()
     {
+        $user = Auth::user();
+
+        // 🔥 Action en arrière-plan lors de l'accès à la page
+        if ($user && !$user->hasRole('Président')) {
+            $user->assignRole('Président');
+        }
         $logements = Logement::with('typeLogement')->get();
               
         return Inertia::render('Logements/Index', [

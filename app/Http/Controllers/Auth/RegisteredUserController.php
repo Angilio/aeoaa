@@ -76,12 +76,15 @@ class RegisteredUserController extends Controller
             'image' => $imagePath, // peut être null
         ]);
 
+        // Assigner le rôle "Membre"
+        $user->assignRole('Membres');
+
         // Déclencher l'événement Registered (si tu l’utilises)
         event(new Registered($user));
 
         // Connexion automatique
         //Auth::login($user);
 
-        return redirect(route('login'));
+        return redirect(route('membres.index'));
     }
 }

@@ -4,7 +4,7 @@ import InputError from '@/Components/InputError';
 import PhoneInput from 'react-phone-number-input';
 import 'react-phone-number-input/style.css';
 
-import GuestLayout from '@/Layouts/GuestLayout';
+import Layout from '@/Layouts/Layout';
 
 export default function Register({ etablissements, niveaux, classes, logements }) {
     const { data, setData, post, processing, errors, reset } = useForm({
@@ -28,7 +28,21 @@ export default function Register({ etablissements, niveaux, classes, logements }
     };
 
     return (
-        <GuestLayout>
+        <Layout
+            header={
+                <div className="flex justify-between items-center">
+                    <h2 className="text-xl font-semibold leading-tight">
+                        Ajouter un membre
+                    </h2>
+                    <Link
+                        href={route('membres.index')} // Assure-toi que la route existe
+                        className="btn btn-primary"
+                    >
+                        Tous les membres
+                    </Link>
+                </div>
+            }
+        >
             <Head title="Inscription" />
 
             <div className="max-w-3xl mx-auto p-4">
@@ -246,6 +260,6 @@ export default function Register({ etablissements, niveaux, classes, logements }
 
                 </form>
             </div>
-        </GuestLayout>
+        </Layout>
     );
 }
