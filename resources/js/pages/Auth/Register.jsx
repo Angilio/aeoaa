@@ -1,9 +1,8 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Head, Link, useForm } from '@inertiajs/react';
 import InputError from '@/Components/InputError';
 import PhoneInput from 'react-phone-number-input';
 import 'react-phone-number-input/style.css';
-
 import Layout from '@/Layouts/Layout';
 
 export default function Register({ etablissements, niveaux, classes, logements }) {
@@ -20,6 +19,21 @@ export default function Register({ etablissements, niveaux, classes, logements }
         logement_id: '',
     });
 
+    const [filteredClasses, setFilteredClasses] = useState(classes);
+
+    // Filtrage dynamique des classes selon le niveau
+    useEffect(() => {
+        if (!data.niveau_id) {
+            setFilteredClasses(classes);
+        } else {
+            const filtered = classes.filter(cls => cls.niveau_id == data.niveau_id);
+            setFilteredClasses(filtered);
+            if (!filtered.some(cls => cls.id == data.classe_id)) {
+                setData('classe_id', '');
+            }
+        }
+    }, [data.niveau_id]);
+
     const submit = (e) => {
         e.preventDefault();
         post(route('register'), {
@@ -35,7 +49,7 @@ export default function Register({ etablissements, niveaux, classes, logements }
                         Ajouter un membre
                     </h2>
                     <Link
-                        href={route('membres.index')} // Assure-toi que la route existe
+                        href={route('membres.index')}
                         className="btn btn-primary"
                     >
                         Tous les membres
@@ -46,26 +60,22 @@ export default function Register({ etablissements, niveaux, classes, logements }
             <Head title="Inscription" />
 
             <div className="max-w-3xl mx-auto p-4">
-                <h1 className="text-3xl font-bold text-center text-primary mb-6">
-                    Page d'inscription
-                </h1>
-
                 <form
                     onSubmit={submit}
                     className="card bg-base-100 shadow-2xl p-6 space-y-6"
                 >
+                    <h1 className="text-3xl font-bold text-center text-primary mb-6">
+                        Ajouter un nouveau membre ici!
+                    </h1>
 
-                    {/* Groupe : Name + Email */}
+                    {/* Nom + Email */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-
-                        {/* Nom */}
                         <div className="form-control">
                             <label className="label">
                                 <span className="label-text">Nom</span>
                             </label>
                             <input
                                 type="text"
-                                id="name"
                                 value={data.name}
                                 onChange={(e) => setData('name', e.target.value)}
                                 className="input input-bordered w-full"
@@ -74,14 +84,12 @@ export default function Register({ etablissements, niveaux, classes, logements }
                             <InputError message={errors.name} className="text-error mt-1" />
                         </div>
 
-                        {/* Email */}
                         <div className="form-control">
                             <label className="label">
                                 <span className="label-text">Email</span>
                             </label>
                             <input
                                 type="email"
-                                id="email"
                                 value={data.email}
                                 onChange={(e) => setData('email', e.target.value)}
                                 className="input input-bordered w-full"
@@ -91,15 +99,12 @@ export default function Register({ etablissements, niveaux, classes, logements }
                         </div>
                     </div>
 
-                    {/* Groupe : Contact + Image */}
+                    {/* Contact + Image */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-
-                        {/* Téléphone */}
                         <div className="form-control">
                             <label className="label">
                                 <span className="label-text">Contact</span>
                             </label>
-
                             <div className="input input-bordered p-0 overflow-hidden">
                                 <PhoneInput
                                     defaultCountry="MG"
@@ -109,11 +114,9 @@ export default function Register({ etablissements, niveaux, classes, logements }
                                     className="w-full px-3 py-2 bg-transparent text-base-content"
                                 />
                             </div>
-
                             <InputError message={errors.contact} className="text-error mt-1" />
                         </div>
 
-                        {/* Image */}
                         <div className="form-control">
                             <label className="label">
                                 <span className="label-text">Image (optionnel)</span>
@@ -128,10 +131,8 @@ export default function Register({ etablissements, niveaux, classes, logements }
                         </div>
                     </div>
 
-                    {/* Sélecteurs */}
+                    {/* Établissement + Niveau */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-
-                        {/* Établissement */}
                         <div className="form-control">
                             <label className="label">
                                 <span className="label-text">Établissement</span>
@@ -139,7 +140,7 @@ export default function Register({ etablissements, niveaux, classes, logements }
                             <select
                                 value={data.etablissement_id}
                                 onChange={(e) => setData('etablissement_id', e.target.value)}
-                                className="select select-bordered w-full bg-base-100 text-base-content"
+                                className="select select-bordered w-full"
                                 required
                             >
                                 <option value="">Sélectionner</option>
@@ -152,7 +153,6 @@ export default function Register({ etablissements, niveaux, classes, logements }
                             <InputError message={errors.etablissement_id} className="text-error mt-1" />
                         </div>
 
-                        {/* Niveau */}
                         <div className="form-control">
                             <label className="label">
                                 <span className="label-text">Niveau</span>
@@ -160,20 +160,20 @@ export default function Register({ etablissements, niveaux, classes, logements }
                             <select
                                 value={data.niveau_id}
                                 onChange={(e) => setData('niveau_id', e.target.value)}
-                                className="select select-bordered w-full bg-base-100 text-base-content"
+                                className="select select-bordered w-full"
                                 required
                             >
                                 <option value="">Sélectionner</option>
-                                {niveaux.map((niv) => (
-                                    <option key={niv.id} value={niv.id}>
-                                        {niv.name}
-                                    </option>
+                                {niveaux.map(n => (
+                                    <option key={n.id} value={n.id}>{n.name}</option>
                                 ))}
                             </select>
                             <InputError message={errors.niveau_id} className="text-error mt-1" />
                         </div>
+                    </div>
 
-                        {/* Classe */}
+                    {/* Classe dynamique + Logement */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div className="form-control">
                             <label className="label">
                                 <span className="label-text">Classe</span>
@@ -181,20 +181,18 @@ export default function Register({ etablissements, niveaux, classes, logements }
                             <select
                                 value={data.classe_id}
                                 onChange={(e) => setData('classe_id', e.target.value)}
-                                className="select select-bordered w-full bg-base-100 text-base-content"
+                                className="select select-bordered w-full"
                                 required
+                                disabled={!data.niveau_id}
                             >
                                 <option value="">Sélectionner</option>
-                                {classes.map((cls) => (
-                                    <option key={cls.id} value={cls.id}>
-                                        {cls.name}
-                                    </option>
+                                {filteredClasses.map(cls => (
+                                    <option key={cls.id} value={cls.id}>{cls.name}</option>
                                 ))}
                             </select>
                             <InputError message={errors.classe_id} className="text-error mt-1" />
                         </div>
 
-                        {/* Logement */}
                         <div className="form-control">
                             <label className="label">
                                 <span className="label-text">Logement</span>
@@ -202,20 +200,18 @@ export default function Register({ etablissements, niveaux, classes, logements }
                             <select
                                 value={data.logement_id}
                                 onChange={(e) => setData('logement_id', e.target.value)}
-                                className="select select-bordered w-full bg-base-100 text-base-content"
+                                className="select select-bordered w-full"
                             >
                                 <option value="">Sélectionner</option>
-                                {logements.map((log) => (
-                                    <option key={log.id} value={log.id}>
-                                        {log.name}
-                                    </option>
+                                {logements.map(log => (
+                                    <option key={log.id} value={log.id}>{log.name}</option>
                                 ))}
                             </select>
                             <InputError message={errors.logement_id} className="text-error mt-1" />
                         </div>
                     </div>
 
-                    {/* Password */}
+                    {/* Mot de passe + confirmation */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div className="form-control">
                             <label className="label">
@@ -223,7 +219,6 @@ export default function Register({ etablissements, niveaux, classes, logements }
                             </label>
                             <input
                                 type="password"
-                                id="password"
                                 value={data.password}
                                 onChange={(e) => setData('password', e.target.value)}
                                 className="input input-bordered w-full"
@@ -238,7 +233,6 @@ export default function Register({ etablissements, niveaux, classes, logements }
                             </label>
                             <input
                                 type="password"
-                                id="password_confirmation"
                                 value={data.password_confirmation}
                                 onChange={(e) => setData('password_confirmation', e.target.value)}
                                 className="input input-bordered w-full"
@@ -247,14 +241,14 @@ export default function Register({ etablissements, niveaux, classes, logements }
                         </div>
                     </div>
 
-                    {/* Submit */}
+                    {/* Bouton d'envoi */}
                     <div className="form-control mt-4">
                         <button
                             type="submit"
                             className="btn btn-primary w-full"
                             disabled={processing}
                         >
-                            S'inscrire
+                            Ajouter un nouveau membre
                         </button>
                     </div>
 

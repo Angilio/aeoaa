@@ -2,14 +2,13 @@
 
 namespace App\Http\Controllers;
 
-namespace App\Http\Controllers;
-
 use App\Models\User;
 use App\Models\Niveau;
 use App\Models\Logement;
 use App\Models\TypeLogement;
 use App\Models\Etablissement;
 use App\Models\Classe;
+use Spatie\Permission\Models\Role; // ⚡ Pour récupérer les rôles
 use Inertia\Inertia;
 use Illuminate\Http\Request;
 
@@ -18,6 +17,7 @@ class MembreController extends Controller
     public function index(Request $request)
     {
         // Charger toutes les options pour les filtres
+        $roles = Role::all(); // Tous les rôles existants
         $niveaux = Niveau::all();
         $logements = Logement::all();
         $typesLogements = TypeLogement::all();
@@ -28,9 +28,14 @@ class MembreController extends Controller
         $query = User::query()
             ->with(['roles', 'niveau', 'logement.typeLogement', 'classe', 'etablissement']);
 
+        // Recherche par nom
+        if ($request->filled('search')) {
+            $query->where('name', 'like', '%' . $request->search . '%');
+        }
+
         // Filtres
         if ($request->filled('role')) {
-            $query->whereHas('roles', fn($q) => $q->where('name', $request->role));
+            $query->whereHas('roles', fn($q) => $q->where('id', $request->role));
         }
 
         if ($request->filled('niveau')) {
@@ -57,7 +62,8 @@ class MembreController extends Controller
 
         return Inertia::render('President/Membres/Index', [
             'membres' => $membres,
-            'filters' => $request->only(['role', 'niveau', 'logement', 'type_logement', 'classe', 'etablissement']),
+            'filters' => $request->only(['search', 'role', 'niveau', 'logement', 'type_logement', 'classe', 'etablissement']),
+            'roles' => $roles,
             'niveaux' => $niveaux,
             'logements' => $logements,
             'typesLogements' => $typesLogements,
@@ -66,4 +72,3 @@ class MembreController extends Controller
         ]);
     }
 }
-

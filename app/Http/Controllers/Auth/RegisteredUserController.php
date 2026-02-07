@@ -87,4 +87,18 @@ class RegisteredUserController extends Controller
 
         return redirect(route('membres.index'));
     }
+
+    public function deleteUser($id)
+    {
+        $user = \App\Models\User::findOrFail($id);
+
+        // Tu peux ajouter une vérification pour éviter de supprimer un admin par exemple
+        if ($user->roles->contains('name', 'Président')) {
+            return back()->with('error', 'Impossible de supprimer un administrateur.');
+        }
+
+        $user->delete();
+
+        return redirect()->route('membres.index')->with('success', 'Membre supprimé avec succès.');
+    }
 }
