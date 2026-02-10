@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { router } from '@inertiajs/react';
-import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
+import { Link, Head, router } from '@inertiajs/react';
+import Layout from '@/Layouts/Layout';
 
 export default function Edit({ logement, types }) {
 
@@ -20,8 +20,23 @@ export default function Edit({ logement, types }) {
     };
 
     return (
-        <AuthenticatedLayout>
-            <div className="p-6 bg-base-100 text-base-content rounded-lg shadow ">
+        <Layout
+            header={
+                <div className="flex justify-between items-center">
+                    <h2 className="font-semibold text-xl leading-tight">
+                        Modifier un logement
+                    </h2>
+                    <Link
+                        href={route('logements.index')}
+                        className="btn btn-primary"
+                    >
+                        Tous les logements
+                    </Link>
+                </div>
+            }
+        >
+            <Head title="Modifier un logements"/>
+            <div className="px-10 bg-base-100 text-base-content rounded-lg shadow ">
                 <h1 className="text-2xl mb-4 text-center">Modifier le logement</h1>
 
                 <form onSubmit={handleSubmit} className="space-y-4">
@@ -65,11 +80,13 @@ export default function Edit({ logement, types }) {
                         </select>
                     </div>
 
-                    <button type="submit" className="btn btn-warning">
-                        Mettre à jour
-                    </button>
+                    <div className="text-end">
+                        <button type="submit" className="btn btn-warning">
+                            Mettre à jour
+                        </button>
+                    </div>
                 </form>
             </div>
-        </AuthenticatedLayout>
+        </Layout>
     );
 }

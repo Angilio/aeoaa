@@ -26,6 +26,15 @@ export default function AuthenticatedLayout({ header, children }) {
         localStorage.setItem("theme", newTheme);
     };
 
+    // 🔒 Bloc de chargement si l'utilisateur n'est pas encore défini
+    if (!user) {
+        return (
+            <div className="min-h-screen flex items-center justify-center bg-base-100 text-base-content">
+                Chargement...
+            </div>
+        );
+    }
+
     return (
         <div className="min-h-screen bg-base-100 text-base-content">
             <nav className="navbar border-b shadow-md bg-base-100 px-4">
@@ -107,9 +116,13 @@ export default function AuthenticatedLayout({ header, children }) {
                             Dashboard
                         </ResponsiveNavLink>
 
-                        <ResponsiveNavLink href={route('profile.edit')} className="btn btn-ghost w-full mt-1">
+                        <ResponsiveNavLink
+                            href={route('profile.edit')}
+                            className="btn btn-ghost w-full mt-1"
+                        >
                             Profile
                         </ResponsiveNavLink>
+
                         <ResponsiveNavLink
                             method="post"
                             href={route('logout')}

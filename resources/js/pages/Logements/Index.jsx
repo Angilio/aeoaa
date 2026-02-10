@@ -1,48 +1,49 @@
 import React, { useState } from 'react';
-import { Link, router } from '@inertiajs/react';
-import { Pencil, Trash2, ChevronLeft, ChevronRight } from "lucide-react";
-import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
+import { Head, Link, router } from '@inertiajs/react';
+import { Pencil, Trash2, ChevronLeft, ChevronRight, X } from "lucide-react";
+import Layout from '@/Layouts/Layout';
 
 export default function Index({ logements }) {
-
     const [filterType, setFilterType] = useState("all");
     const [currentPage, setCurrentPage] = useState(1);
+    const [modalOpen, setModalOpen] = useState(false);
+    const [toDeleteId, setToDeleteId] = useState(null);
+
     const itemsPerPage = 5;
+    const types = ["PV", "PJ", "Bloc", "BM", "BR"]; 
 
     const handleDelete = (id) => {
-        if (confirm("Supprimer ce logement ?")) {
-            router.delete(`/logements/${id}`);
-        }
+        router.delete(`/logements/${id}`);
+        setModalOpen(false);
+        setToDeleteId(null);
+    };
+
+    const confirmDelete = (id) => {
+        setToDeleteId(id);
+        setModalOpen(true);
     };
 
     const filtered = logements.filter(l =>
         filterType === "all" ? true : l.type_logement?.type === filterType
     );
 
-    // Calculer la pagination
     const totalPages = Math.ceil(filtered.length / itemsPerPage);
     const startIndex = (currentPage - 1) * itemsPerPage;
     const endIndex = startIndex + itemsPerPage;
     const currentItems = filtered.slice(startIndex, endIndex);
 
-    // Réinitialiser la page quand le filtre change
     const handleFilterChange = (type) => {
         setFilterType(type);
         setCurrentPage(1);
     };
 
-    const types = ["PV", "PJ", "Bloc", "BM", "BR"]; 
-
     return (
-        <AuthenticatedLayout
-            header={<h2 className="text-xl font-semibold leading-tight">Logements</h2>}
-        >
-            
-            <div className="p-10 bg-base-100 text-base-content rounded-lg shadow">
+        <Layout header={<h2 className="text-xl font-semibold leading-tight">Logements</h2>}>
+            <Head title="Les logements" />
+            <div className="px-4 bg-base-100 text-base-content rounded-lg shadow p-4">
 
-                <div className="flex justify-between mb-4">
-                    <h1 className="text-2xl mb-4">Liste des logements</h1>
-
+                {/* Header: filtres + bouton ajouter */}
+                <div className="flex justify-between mb-4 items-center">
                     <div className="flex gap-2">
                         <button
                             onClick={() => handleFilterChange("all")}
@@ -50,7 +51,6 @@ export default function Index({ logements }) {
                         >
                             Tous
                         </button>
-
                         {types.map(t => (
                             <button
                                 key={t}
@@ -60,17 +60,14 @@ export default function Index({ logements }) {
                                 {t}
                             </button>
                         ))}
-
                     </div>
 
-                    <Link
-                        href="/logements/create"
-                        className="btn btn-primary"
-                    >
+                    <Link href="/logements/create" className="btn btn-primary">
                         Ajouter un logement
                     </Link>
                 </div>
 
+                {/* Tableau */}
                 <table className="table w-full table-zebra">
                     <thead>
                         <tr>
@@ -87,15 +84,11 @@ export default function Index({ logements }) {
                                 <td className="text-center">{l.nbrPlace}</td>
                                 <td className="text-center">{l.type_logement?.type}</td>
                                 <td className="flex gap-2 justify-center">
-                                    <Link
-                                        href={`/logements/${l.id}/edit`}
-                                        className="btn btn-primary btn-sm"
-                                    >
+                                    <Link href={`/logements/${l.id}/edit`} className="btn btn-primary btn-sm">
                                         <Pencil size={16} />
                                     </Link>
-
                                     <button
-                                        onClick={() => handleDelete(l.id)}
+                                        onClick={() => confirmDelete(l.id)}
                                         className="btn btn-error btn-sm"
                                     >
                                         <Trash2 size={16} />
@@ -131,7 +124,36 @@ export default function Index({ logements }) {
                     </div>
                 </div>
 
+                {/* Modal de confirmation */}
+                {modalOpen && (
+                    <div className="fixed inset-0 flex items-center justify-center bg-black/50 z-50">
+                        <div className="bg-base-100 p-6 rounded-lg shadow-lg w-96">
+                            <div className="flex justify-between items-center mb-4">
+                                <h3 className="text-lg font-semibold">Confirmer la suppression</h3>
+                                <button onClick={() => setModalOpen(false)}>
+                                    <X size={20} />
+                                </button>
+                            </div>
+                            <p className="mb-4">Voulez-vous vraiment supprimer ce logement ?</p>
+                            <div className="flex justify-end gap-2">
+                                <button
+                                    onClick={() => setModalOpen(false)}
+                                    className="btn btn-ghost"
+                                >
+                                    Annuler
+                                </button>
+                                <button
+                                    onClick={() => handleDelete(toDeleteId)}
+                                    className="btn btn-error"
+                                >
+                                    Supprimer
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                )}
+
             </div>
-        </AuthenticatedLayout>
+        </Layout>
     );
 }

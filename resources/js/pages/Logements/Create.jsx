@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { router } from '@inertiajs/react';
-import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
+import { Head,router,Link } from '@inertiajs/react';
+import Layout from '@/Layouts/Layout';
 
 export default function Create({ types }) {
     const [values, setValues] = useState({
@@ -19,9 +19,24 @@ export default function Create({ types }) {
     };
 
     return (
-        <AuthenticatedLayout>
-            <div className="p-6 bg-base-100 text-base-content rounded-lg shadow">
-                <h1 className="text-2xl mb-4">Ajouter un logement</h1>
+        <Layout
+            header={
+                <div className="flex justify-between items-center">
+                    <h2 className="font-semibold text-xl leading-tight">
+                        Ajouter un logement
+                    </h2>
+                    <Link
+                        href={route('logements.index')}
+                        className="btn btn-primary"
+                    >
+                        Tous les logements
+                    </Link>
+                </div>
+            }
+        >
+            <Head title="Ajouter un nouveau logements"/>
+            <div className="px-10 bg-base-100 text-base-content rounded-lg shadow">
+                <h1 className="text-center text-2xl mb-4">Ajouter un logement</h1>
 
                 <form onSubmit={handleSubmit} className="space-y-4">
 
@@ -65,11 +80,13 @@ export default function Create({ types }) {
                         </select>
                     </div>
 
-                    <button type="submit" className="btn btn-primary">
-                        Enregistrer
-                    </button>
+                    <div className="text-right">
+                        <button type="submit" className="btn btn-primary">
+                            Enregistrer
+                        </button>
+                    </div>
                 </form>
             </div>
-        </AuthenticatedLayout>
+        </Layout>
     );
 }

@@ -22,11 +22,14 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-    Route::resource('logements', LogementController::class);
 });
 
-Route::middleware(['auth'])->group(function () {
+Route::middleware(['auth', 'role:Président'])->group(function () {
     Route::get('/membres', [MembreController::class, 'index'])->name('membres.index');
+});
+
+Route::middleware(['auth',  'role:Commission de logement'])->group(function () {
+    Route::resource('logements', LogementController::class);
 });
 
 

@@ -12,12 +12,11 @@ class LogementController extends Controller
 {
     public function index()
     {
-        $user = Auth::user();
-
-        // 🔥 Action en arrière-plan lors de l'accès à la page
-        if ($user && !$user->hasRole('Président')) {
-            $user->assignRole('Président');
-        }
+        // $user = Auth::user();
+        // if ($user && !$user->hasRole('Commission de logement')) {
+        //     $user->assignRole('Commission de logement');
+        // }
+        
         $logements = Logement::with('typeLogement')->get();
               
         return Inertia::render('Logements/Index', [
