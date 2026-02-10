@@ -60,4 +60,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(Evenements::class);
     }
+
+    public function attributions()
+    {
+        return $this->hasMany(Attribution::class);
+    }
 }

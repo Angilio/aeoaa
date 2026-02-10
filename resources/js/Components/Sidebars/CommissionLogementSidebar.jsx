@@ -48,19 +48,9 @@ export default function CommissionLogementSidebar() {
                     </Link>
                 </li>
 
-                {/* Demandes */}
-                {/* <li>
-                    <Link
-                        href={route('demandes.index')}
-                        className={linkClass(isActive('demandes.*'))}
-                    >
-                        <ClipboardList size={18} />
-                        <span>Demandes</span>
-                    </Link>
-                </li> */}
 
                 {/* Attributions */}
-                {/* <li>
+                <li>
                     <Link
                         href={route('attributions.index')}
                         className={linkClass(isActive('attributions.*'))}
@@ -68,7 +58,7 @@ export default function CommissionLogementSidebar() {
                         <CheckCircle size={18} />
                         <span>Attributions</span>
                     </Link>
-                </li> */}
+                </li>
 
             </ul>
 
