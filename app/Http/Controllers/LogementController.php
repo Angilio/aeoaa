@@ -11,12 +11,7 @@ use Illuminate\Support\Facades\Auth;
 class LogementController extends Controller
 {
     public function index()
-    {
-        // $user = Auth::user();
-        // if ($user && !$user->hasRole('Commission de logement')) {
-        //     $user->assignRole('Commission de logement');
-        // }
-        
+    {        
         $logements = Logement::with('typeLogement')->get();
               
         return Inertia::render('Logements/Index', [

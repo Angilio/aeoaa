@@ -38,6 +38,7 @@ class AuthenticatedSessionController extends Controller
         $roleRedirects = [
             'Commission de logement' => 'dashboard.logements',
             'Président' => 'president.dashboard',
+            'Trésorier(ère)' => 'tresorier.dashboard',
             'Membres' => 'dashboard',
         ];
 

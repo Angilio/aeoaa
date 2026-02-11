@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ProfileController;
 use Illuminate\Foundation\Application;
+use App\Http\Controllers\Tresorier\TresorierController;
 use App\Http\Controllers\AttributionController;
 use App\Http\Controllers\LogementController;
 use App\Http\Controllers\MembreController;
@@ -16,6 +17,10 @@ Route::get('/', function () {
 });
 
 Route::get('/dashboard', function () {
+    // $user = Auth::user();
+    // if ($user && !$user->hasRole('Commission de logement')) {
+    //     $user->assignRole('Trésorier(ère)');
+    // }
     return Inertia::render('Dashboard');
 })->middleware(['auth'])->name('dashboard');
 
@@ -54,6 +59,26 @@ Route::middleware(['auth', 'role:Commission de logement'])->group(function () {
     Route::get('attributions/export-pdf', [AttributionController::class, 'exportPdf'])
      ->name('attributions.export.pdf');
 });
+
+
+Route::middleware(['auth', 'role:Trésorier(ère)'])
+    ->prefix('tresorier')
+    ->name('tresorier.')
+    ->group(function () {
+
+        Route::get('/dashboard', [TresorierController::class, 'dashboard'])
+            ->name('dashboard');
+
+        Route::get('/finances', [TresorierController::class, 'finances'])
+            ->name('finances');
+
+        Route::post('/ressources', [TresorierController::class, 'storeRessource'])
+            ->name('ressources.store');
+
+        Route::get('/rapports', [TresorierController::class, 'rapports'])
+            ->name('rapports');
+});
+
 
 
 
