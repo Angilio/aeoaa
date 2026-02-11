@@ -26,6 +26,7 @@ Route::middleware('auth')->group(function () {
 });
 
 Route::middleware(['auth', 'role:Président'])->group(function () {
+    Route::get('/president/dashboard', [MembreController::class, 'dashboard'])->name('president.dashboard');
     Route::get('/membres', [MembreController::class, 'index'])->name('membres.index');
 });
 
@@ -33,6 +34,9 @@ Route::middleware(['auth', 'role:Président'])->group(function () {
 
 // Routes pour les logements (Commission de logement seulement)
 Route::middleware(['auth', 'role:Commission de logement'])->group(function () {
+    Route::get('logements/dashboard', [AttributionController::class, 'dashboard'])
+        ->name('dashboard.logements');
+
     Route::resource('logements', LogementController::class);
 
     // Routes pour les attributions
@@ -42,6 +46,8 @@ Route::middleware(['auth', 'role:Commission de logement'])->group(function () {
     Route::get('attributions/{attribution}/edit', [AttributionController::class, 'edit'])->name('attributions.edit');
     Route::put('attributions/{attribution}', [AttributionController::class, 'update'])->name('attributions.update');
     Route::delete('attributions/{attribution}', [AttributionController::class, 'destroy'])->name('attributions.destroy');
+
+
 
     // Route pour exporter les attributions en PDF
     //Route::get('attributions-export/pdf', [AttributionController::class, 'exportPdf'])->name('attributions.export.pdf');

@@ -14,7 +14,7 @@ export default function Layout({ children, header = null }) {
 
                 {/* SIDEBAR */}
                 {SidebarComponent && (
-                    <aside className="hidden md:block w-64 bg-base-200 border-r border-base-300">
+                    <aside className="hidden md:block w-64 bg-base-200 border-r border-base-300 rounded-xl">
                         <SidebarComponent />
                     </aside>
                 )}
@@ -32,7 +32,7 @@ export default function Layout({ children, header = null }) {
                     )}
 
                     {/* MAIN */}
-                    <main className="flex-1 p-6 text-base-content overflow-x-auto">
+                    <main className="flex-1 text-base-content overflow-x-auto">
                         {children}
                     </main>
 

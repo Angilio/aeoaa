@@ -2,7 +2,6 @@ import { Link } from '@inertiajs/react';
 import {
     Home,
     Building2,
-    ClipboardList,
     CheckCircle,
 } from 'lucide-react';
 
@@ -29,8 +28,8 @@ export default function CommissionLogementSidebar() {
                 {/* Dashboard */}
                 <li>
                     <Link
-                        href={route('dashboard')}
-                        className={linkClass(isActive('dashboard'))}
+                        href={route('dashboard.logements')}
+                        className={linkClass(isActive('dashboard.logements'))}
                     >
                         <Home size={18} />
                         <span>Tableau de bord</span>

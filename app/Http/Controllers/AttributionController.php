@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Attribution;
 use App\Models\User;
 use App\Models\Logement;
+use App\Models\TypeLogement;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Barryvdh\DomPDF\Facade\Pdf;
@@ -114,4 +115,16 @@ class AttributionController extends Controller
         // Télécharger le PDF
         return $pdf->download('attributions.pdf');
     }
+
+    public function dashboard()
+    {
+        $logementsParType = TypeLogement::withCount('logements')->get();
+        $totalLogements = $logementsParType->sum('logements_count');
+
+        return Inertia::render('Logements/Dashboard', [
+            'logementsParType' => $logementsParType,
+            'totalLogements' => $totalLogements
+        ]);
+    }
+
 }

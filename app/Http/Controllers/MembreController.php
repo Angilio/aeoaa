@@ -71,4 +71,20 @@ class MembreController extends Controller
             'classes' => $classes,
         ]);
     }
+
+    public function dashboard()
+    {
+        // Récupérer chaque type de logement avec le nombre de membres qui y sont attribués
+        $typesLogements = TypeLogement::withCount(['logements as membres_count' => function ($query) {
+            $query->withCount('users'); // compter les utilisateurs dans chaque logement
+        }])->get();
+
+        // Calculer le nombre total de membres
+        $totalMembres = \App\Models\User::count();
+
+        return Inertia::render('President/Dashboard', [
+            'typesLogements' => $typesLogements,
+            'totalMembres' => $totalMembres,
+        ]);
+    }
 }
