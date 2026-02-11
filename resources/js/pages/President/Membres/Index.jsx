@@ -99,7 +99,7 @@ export default function Index({ membres, filters, niveaux, logements, classes, e
                 {/* FILTRES */}
                 <div className="grid grid-cols-1 md:grid-cols-6 gap-4 mb-6">
                     {/* Rôle */}
-                    <select
+                    {/* <select
                         className="select select-bordered"
                         onChange={e => updateFilter('role', e.target.value)}
                         value={filters.role || ''}
@@ -108,7 +108,7 @@ export default function Index({ membres, filters, niveaux, logements, classes, e
                         {roles.map(role => (
                             <option key={role.id} value={role.name}>{role.name}</option>
                         ))}
-                    </select>
+                    </select> */}
 
                     {/* Niveau */}
                     <select
@@ -177,7 +177,6 @@ export default function Index({ membres, filters, niveaux, logements, classes, e
                         <tr>
                             <th>Nom</th>
                             <th>Email</th>
-                            <th>Rôle</th>
                             <th>Niveau</th>
                             <th>Logement</th>
                             <th>Classe</th>
@@ -190,7 +189,6 @@ export default function Index({ membres, filters, niveaux, logements, classes, e
                             <tr key={user.id}>
                                 <td>{user.name}</td>
                                 <td>{user.email}</td>
-                                <td>{user.roles?.[0]?.name}</td>
                                 <td>{user.niveau?.name}</td>
                                 <td>{user.logement?.name}</td>
                                 <td>{user.classe?.name}</td>

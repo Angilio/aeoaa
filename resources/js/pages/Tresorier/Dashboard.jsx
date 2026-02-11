@@ -11,12 +11,13 @@ export default function Dashboard() {
             }
         >
             <Head title="Dashboard Trésorier" />
-
-            <div className="grid md:grid-cols-3 gap-4">
-                <div className="card bg-base-100 shadow">
-                    <div className="card-body">
-                        <h2 className="card-title">Total des cotisations</h2>
-                        <p className="text-xl font-bold">Ar 0</p>
+            <div className="bg-base-100 rounded shadow p-6">
+                <div className="grid md:grid-cols-3 gap-4 ">
+                    <div className="card bg-base-100 shadow">
+                        <div className="card-body">
+                            <h2 className="card-title">Total des cotisations</h2>
+                            <p className="text-xl font-bold"> Ar 0</p>
+                        </div>
                     </div>
                 </div>
             </div>

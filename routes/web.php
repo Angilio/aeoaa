@@ -77,6 +77,17 @@ Route::middleware(['auth', 'role:Trésorier(ère)'])
 
         Route::get('/rapports', [TresorierController::class, 'rapports'])
             ->name('rapports');
+
+        Route::get('/entrees', [TresorierController::class, 'entrees'])
+            ->name('entrees.index');
+        Route::post('/entrees', [TresorierController::class, 'storeEntree'])
+            ->name('entrees.store');
+
+        Route::get('/sorties', [TresorierController::class, 'sorties'])
+            ->name('sorties.index');
+
+        Route::post('/sorties', [TresorierController::class, 'storeSortie'])
+            ->name('sorties.store');
 });
 
 

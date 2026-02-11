@@ -8,7 +8,6 @@ class Entree extends Model
 {
     protected $fillable = [
         'montant',
-        'raison',
         'caisse_id',
         'ress_financiere_id', // il faut ajouter ce champ pour le mass assignable
     ];
