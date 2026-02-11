@@ -7,14 +7,16 @@ use App\Models\User;
 use App\Models\Logement;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
-use PDF; // Si tu as installé barryvdh/laravel-dompdf
+use Barryvdh\DomPDF\Facade\Pdf;
+use Carbon\Carbon;
+//use PDF; // Si tu as installé barryvdh/laravel-dompdf
 
 class AttributionController extends Controller
 {
-    // Affiche toutes les attributions
     public function index()
     {
-        $attributions = Attribution::with(['user', 'logement'])->get();
+        // Charger user, ses roles et logement
+        $attributions = Attribution::with(['user.roles', 'logement'])->get();
 
         return Inertia::render('Attributions/Index', [
             'attributions' => $attributions,
@@ -33,26 +35,31 @@ class AttributionController extends Controller
         ]);
     }
 
-    // Enregistrer les attributions multiples
     public function store(Request $request)
     {
         $request->validate([
-            'user_ids' => 'required|array',
-            'logement_id' => 'required|exists:logements,id',
-            'date_debut' => 'required|date',
-            'date_fin' => 'nullable|date|after_or_equal:date_debut',
+            'attributions' => 'required|array',
+            'attributions.*.logement_id' => 'required|exists:logements,id',
+            'attributions.*.user_ids' => 'required|array|min:1',
+            'attributions.*.user_ids.*' => 'exists:users,id',
+            'attributions.*.date_debut' => 'required|date',
+            'attributions.*.date_fin' => 'nullable|date|after_or_equal:attributions.*.date_debut',
         ]);
 
-        foreach ($request->user_ids as $userId) {
-            Attribution::create([
-                'user_id' => $userId,
-                'logement_id' => $request->logement_id,
-                'date_debut' => $request->date_debut,
-                'date_fin' => $request->date_fin,
-            ]);
+        foreach ($request->attributions as $attr) {
+            foreach ($attr['user_ids'] as $userId) {
+                Attribution::create([
+                    'user_id'     => (int) $userId,
+                    'logement_id' => (int) $attr['logement_id'],
+                    'date_debut'  => $attr['date_debut'],
+                    'date_fin'    => $attr['date_fin'] ?? null,
+                ]);
+            }
         }
 
-        return redirect()->route('attributions.index')->with('success', 'Attributions enregistrées avec succès.');
+        return redirect()
+            ->route('attributions.index')
+            ->with('success', 'Attributions enregistrées avec succès.');
     }
 
     // Formulaire pour éditer une attribution
@@ -91,15 +98,20 @@ class AttributionController extends Controller
         return redirect()->route('attributions.index')->with('success', 'Attribution supprimée.');
     }
 
-    // Exporter toutes les attributions en PDF
     public function exportPdf()
     {
-        $attributions = Attribution::with(['user', 'logement'])->get();
+        // Charger toutes les attributions avec relations user.roles et logement
+        $attributions = Attribution::with(['user.roles', 'logement'])->get();
 
-        $pdf = PDF::loadView('attributions.pdf', [
+        // Charger la vue Blade
+        $pdf = Pdf::loadView('attributions.pdf', [
             'attributions' => $attributions
         ]);
 
+        // Définir le format de page et orientation (optionnel)
+        $pdf->setPaper('A4', 'portrait');
+
+        // Télécharger le PDF
         return $pdf->download('attributions.pdf');
     }
 }

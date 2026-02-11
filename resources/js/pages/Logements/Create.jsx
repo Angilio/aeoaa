@@ -38,7 +38,7 @@ export default function Create({ types }) {
             <div className="px-10 bg-base-100 text-base-content rounded-lg shadow">
                 <h1 className="text-center text-2xl mb-4">Ajouter un logement</h1>
 
-                <form onSubmit={handleSubmit} className="space-y-4">
+                <form onSubmit={handleSubmit} className="space-y-4 px-12 pb-5">
 
                     <div>
                         <label className="block mb-1">Nom</label>

@@ -3,42 +3,40 @@ import { router, Head } from '@inertiajs/react';
 import Layout from '@/Layouts/Layout';
 
 export default function Create({ users = [], logements = [] }) {
-  // State dynamique pour les lignes d'attribution
+
   const [attributions, setAttributions] = useState([
-    { logement_id: '', user_id: [], date_debut: '', date_fin: '' }
+    { logement_id: '', user_ids: [], date_debut: '', date_fin: '' }
   ]);
 
-  // Gestion du changement par ligne
   const handleChange = (index, e) => {
-    const { name, value, options } = e.target;
+    const { name, value, multiple, options } = e.target;
+
     setAttributions(prev => {
       const newAttribs = [...prev];
-      if (options) {
-        const selected = Array.from(options)
+
+      if (multiple) {
+        newAttribs[index][name] = Array.from(options)
           .filter(o => o.selected)
           .map(o => o.value);
-        newAttribs[index][name] = selected;
       } else {
         newAttribs[index][name] = value;
       }
+
       return newAttribs;
     });
   };
 
-  // Ajouter une nouvelle ligne
   const addLine = () => {
     setAttributions(prev => [
       ...prev,
-      { logement_id: '', user_id: [], date_debut: '', date_fin: '' }
+      { logement_id: '', user_ids: [], date_debut: '', date_fin: '' }
     ]);
   };
 
-  // Supprimer une ligne
   const removeLine = (index) => {
     setAttributions(prev => prev.filter((_, i) => i !== index));
   };
 
-  // Soumission du formulaire
   const handleSubmit = (e) => {
     e.preventDefault();
     router.post('/attributions', { attributions });
@@ -58,100 +56,110 @@ export default function Create({ users = [], logements = [] }) {
       <Head title="Attribuer" />
 
       <div className="p-6 bg-base-100 text-base-content rounded-lg shadow">
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-6">
 
           {attributions.map((attr, index) => (
-            <div
-              key={index}
-              className="flex md:flex-row flex-col gap-4 items-end border p-4 rounded mb-4"
-            >
-              {/* Logement */}
-              <div className="flex-1">
-                <label className="block mb-1">Logement</label>
-                <select
-                  name="logement_id"
-                  value={attr.logement_id}
-                  onChange={(e) => handleChange(index, e)}
-                  className="select select-bordered w-full"
-                  required
-                >
-                  <option value="">Choisir un logement</option>
-                  {logements?.map(l => (
-                    <option key={l.id} value={l.id}>{l.name}</option>
-                  ))}
-                </select>
-              </div>
+            <div key={index} className="border rounded-lg p-4">
 
-              {/* Utilisateurs */}
-              <div className="flex-1">
-                <label className="block mb-1">Utilisateurs</label>
-                <select
-                  name="user_id"
-                  multiple
-                  value={attr.user_id}
-                  onChange={(e) => handleChange(index, e)}
-                  className="select select-bordered w-full"
-                  required
-                >
-                  {users?.map(u => (
-                    <option key={u.id} value={u.id}>
-                      {u.name} ({u.roles?.map(r => r.name).join(', ') || 'Pas de rôle'})
-                    </option>
-                  ))}
-                </select>
-              </div>
+              {/* GRID RESPONSIVE */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 
-              {/* Dates */}
-              <div className="flex-1 flex gap-2">
+                {/* COLONNE GAUCHE — UTILISATEURS */}
                 <div>
-                  <label>Date début</label>
-                  <input
-                    type="date"
-                    name="date_debut"
-                    value={attr.date_debut}
+                  <label className="block mb-2 font-semibold">
+                    Utilisateurs
+                  </label>
+                  <select
+                    name="user_ids"
+                    multiple
+                    value={attr.user_ids}
                     onChange={(e) => handleChange(index, e)}
-                    className="input input-bordered"
+                    className="select select-bordered w-full min-h-[150px]"
                     required
-                  />
+                  >
+                    {users.map(u => (
+                      <option key={u.id} value={u.id}>{u.name}</option>
+                    ))}
+                  </select>
                 </div>
-                <div>
-                  <label>Date fin</label>
-                  <input
-                    type="date"
-                    name="date_fin"
-                    value={attr.date_fin}
-                    onChange={(e) => handleChange(index, e)}
-                    className="input input-bordered"
-                  />
+
+                {/* COLONNE DROITE — LOGEMENT + DATES */}
+                <div className="space-y-4">
+
+                  <div>
+                    <label className="block mb-1 font-semibold">Logement</label>
+                    <select
+                      name="logement_id"
+                      value={attr.logement_id}
+                      onChange={(e) => handleChange(index, e)}
+                      className="select select-bordered w-full"
+                      required
+                    >
+                      <option value="">Choisir un logement</option>
+                      {logements.map(l => (
+                        <option key={l.id} value={l.id}>{l.name}</option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <div className="flex flex-col sm:flex-row gap-4">
+                    <div className="flex-1">
+                      <label>Date début</label>
+                      <input
+                        type="date"
+                        name="date_debut"
+                        value={attr.date_debut}
+                        onChange={(e) => handleChange(index, e)}
+                        className="input input-bordered w-full"
+                        required
+                      />
+                    </div>
+
+                    <div className="flex-1">
+                      <label>Date fin</label>
+                      <input
+                        type="date"
+                        name="date_fin"
+                        value={attr.date_fin}
+                        onChange={(e) => handleChange(index, e)}
+                        className="input input-bordered w-full"
+                      />
+                    </div>
+                  </div>
+
                 </div>
               </div>
 
-              {/* Bouton supprimer */}
+              {/* SUPPRIMER */}
               {attributions.length > 1 && (
-                <button
-                  type="button"
-                  className="btn btn-error btn-sm"
-                  onClick={() => removeLine(index)}
-                >
-                  Supprimer
-                </button>
+                <div className="text-right mt-4">
+                  <button
+                    type="button"
+                    className="btn btn-error btn-sm"
+                    onClick={() => removeLine(index)}
+                  >
+                    Supprimer cette attribution
+                  </button>
+                </div>
               )}
+
             </div>
           ))}
 
-          {/* Ajouter une ligne */}
-          <button
-            type="button"
-            className="btn btn-secondary mb-4"
-            onClick={addLine}
-          >
-            Ajouter une ligne
-          </button>
+          <div className="flex flex-col sm:flex-row gap-4">
+            <button
+              type="button"
+              className="btn btn-secondary"
+              onClick={addLine}
+            >
+              Ajouter une ligne
+            </button>
 
-          {/* Soumettre */}
-          <button type="submit" className="btn btn-primary">
-            Attribuer
-          </button>
+            <button type="submit" className="btn btn-primary">
+              Attribuer
+            </button>
+          </div>
+
         </form>
       </div>
     </Layout>

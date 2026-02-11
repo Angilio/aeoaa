@@ -44,7 +44,9 @@ Route::middleware(['auth', 'role:Commission de logement'])->group(function () {
     Route::delete('attributions/{attribution}', [AttributionController::class, 'destroy'])->name('attributions.destroy');
 
     // Route pour exporter les attributions en PDF
-    Route::get('attributions-export/pdf', [AttributionController::class, 'exportPdf'])->name('attributions.export.pdf');
+    //Route::get('attributions-export/pdf', [AttributionController::class, 'exportPdf'])->name('attributions.export.pdf');
+    Route::get('attributions/export-pdf', [AttributionController::class, 'exportPdf'])
+     ->name('attributions.export.pdf');
 });
 
 

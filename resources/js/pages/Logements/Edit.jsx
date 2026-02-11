@@ -36,10 +36,10 @@ export default function Edit({ logement, types }) {
             }
         >
             <Head title="Modifier un logements"/>
-            <div className="px-10 bg-base-100 text-base-content rounded-lg shadow ">
+            <div className="px-10 bg-base-100 text-base-content rounded-lg shadow mx-12">
                 <h1 className="text-2xl mb-4 text-center">Modifier le logement</h1>
 
-                <form onSubmit={handleSubmit} className="space-y-4">
+                <form onSubmit={handleSubmit} className="space-y-4 pb-5 px-12">
 
                     <div>
                         <label className="block mb-1">Nom</label>
