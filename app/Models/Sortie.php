@@ -8,11 +8,7 @@ class Sortie extends Model
 {
     protected $fillable = [
         'montant',
-        'caisse_id',
+        'raison',
     ];
 
-    public function caisse()
-    {
-        return $this->belongsTo(Caisse::class);
-    }
 }

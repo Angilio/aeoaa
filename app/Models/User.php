@@ -65,4 +65,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(Attribution::class);
     }
+
+    public function entrees()
+    {
+        return $this->hasMany(Entree::class);
+    }
 }

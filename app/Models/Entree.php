@@ -8,7 +8,7 @@ class Entree extends Model
 {
     protected $fillable = [
         'montant',
-        'caisse_id',
+        'user_id',
         'ress_financiere_id', // il faut ajouter ce champ pour le mass assignable
     ];
 
@@ -18,9 +18,8 @@ class Entree extends Model
         return $this->belongsTo(RessFinanciere::class, 'ress_financiere_id');
     }
 
-    // Relation : si tu veux récupérer la caisse (optionnel)
-    public function caisse()
-    {
-        return $this->belongsTo(Caisse::class);
+    public function user() {
+        return $this->belongsTo(User::class);
     }
+
 }
