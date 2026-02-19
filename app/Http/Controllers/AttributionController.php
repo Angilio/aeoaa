@@ -99,22 +99,6 @@ class AttributionController extends Controller
         return redirect()->route('attributions.index')->with('success', 'Attribution supprimée.');
     }
 
-    public function exportPdf()
-    {
-        // Charger toutes les attributions avec relations user.roles et logement
-        $attributions = Attribution::with(['user.roles', 'logement'])->get();
-
-        // Charger la vue Blade
-        $pdf = Pdf::loadView('attributions.pdf', [
-            'attributions' => $attributions
-        ]);
-
-        // Définir le format de page et orientation (optionnel)
-        $pdf->setPaper('A4', 'portrait');
-
-        // Télécharger le PDF
-        return $pdf->download('attributions.pdf');
-    }
 
     public function dashboard()
     {
@@ -126,5 +110,23 @@ class AttributionController extends Controller
             'totalLogements' => $totalLogements
         ]);
     }
+
+    public function exportPdf()
+{
+    $attributions = Attribution::with(['user.roles', 'logement'])
+        ->orderBy('date_debut', 'desc')
+        ->get();
+
+    $total = $attributions->count();
+
+    $pdf = Pdf::loadView('attributions.pdf', [
+        'attributions' => $attributions,
+        'total' => $total,
+        'dateExport' => now()->format('d/m/Y H:i'),
+    ])
+    ->setPaper('A4', 'portrait');
+
+    return $pdf->download('liste_attributions_' . now()->format('Ymd_His') . '.pdf');
+}
 
 }

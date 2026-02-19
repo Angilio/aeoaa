@@ -52,9 +52,6 @@ Route::middleware(['auth', 'role:Commission de logement'])->group(function () {
     Route::put('attributions/{attribution}', [AttributionController::class, 'update'])->name('attributions.update');
     Route::delete('attributions/{attribution}', [AttributionController::class, 'destroy'])->name('attributions.destroy');
 
-
-
-    // Route pour exporter les attributions en PDF
     //Route::get('attributions-export/pdf', [AttributionController::class, 'exportPdf'])->name('attributions.export.pdf');
     Route::get('attributions/export-pdf', [AttributionController::class, 'exportPdf'])
      ->name('attributions.export.pdf');
@@ -88,6 +85,9 @@ Route::middleware(['auth', 'role:Trésorier(ère)'])
 
         Route::post('/sorties', [TresorierController::class, 'storeSortie'])
             ->name('sorties.store');
+
+        Route::get('/rapports/pdf', [TresorierController::class, 'exportRapportPdf'])
+            ->name('rapports.pdf');
 });
 
 
